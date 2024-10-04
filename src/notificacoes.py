@@ -9,24 +9,24 @@ from db_mysql import registrar_notificacao_mysql
 from db_postgres import registrar_notificacao_postgres
 
 # Simulando um gerador de notificações
-def gerar_notificacao():
+def gerar_notificacao(i):
     status = random.choice(["Sucesso", "Falha", "Processando"])
-    return f"Notificação: {status} em {datetime.now()}"
-
-# Criando um Observable que emite notificações a cada 2 segundos
-observable = rx.interval(2).pipe(
-    ops.map(lambda i: gerar_notificacao())
-)
+    return f"Notificação {i}: {status} em {datetime.now()}"
 
 # Função para lidar com as notificações recebidas e registrar no banco de dados
 def notificar(notificacao):
     print(f"Recebida: {notificacao}")
     
     # Registrando a notificação no MySQL
-    registrar_notificacao_mysql(notificacao)
+    #registrar_notificacao_mysql(notificacao)
 
     # Registrando a notificação no PostgreSQL
-    registrar_notificacao_postgres(notificacao)
+    #registrar_notificacao_postgres(notificacao)
+
+# Criando um Observable que emite notificações a cada 2 segundos
+observable = rx.interval(2).pipe(
+    ops.map(lambda i: gerar_notificacao(i))
+)
 
 # Subscrição ao Observable para receber notificações
 observable.subscribe(on_next=notificar)
